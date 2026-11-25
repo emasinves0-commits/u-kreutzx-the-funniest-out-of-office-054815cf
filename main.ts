@@ -1,21 +1,23 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 
-// The winning one-line out-of-office reply (91 characters, no trailing newline).
 const ENTRY_TEXT =
-  "I'm not ignoring you — I'm out of the office, which is my professional way of ignoring you.";
-const OUTPUT_DIR = "/output";
-const OUTPUT_PATH = `${OUTPUT_DIR}/entry.txt`;
-const MIN_ENTRY_CHARS = 1;
-const MAX_ENTRY_CHARS = 140;
+  "Back on Tuesday—until then, your second paragraph answers your first, so congrats, you’re now my boss.";
 
-if (
-  ENTRY_TEXT.length < MIN_ENTRY_CHARS ||
-  ENTRY_TEXT.length > MAX_ENTRY_CHARS
-) {
-  throw new Error(
-    `Entry must be ${MIN_ENTRY_CHARS}-${MAX_ENTRY_CHARS} characters, got ${ENTRY_TEXT.length}.`,
-  );
+const MIN_LENGTH = 1;
+const MAX_LENGTH = 140;
+
+function validate(text: string): void {
+  const len = [...text].length;
+  if (len < MIN_LENGTH || len > MAX_LENGTH) {
+    throw new Error(`entry must be ${MIN_LENGTH}-${MAX_LENGTH} characters, got ${len}`);
+  }
+  if (/[\r\n]/.test(text)) throw new Error("entry must be a single line");
 }
 
-mkdirSync(OUTPUT_DIR, { recursive: true });
-writeFileSync(OUTPUT_PATH, ENTRY_TEXT, "utf8");
+function main(): void {
+  validate(ENTRY_TEXT);
+  mkdirSync("/output", { recursive: true });
+  writeFileSync("/output/entry.txt", ENTRY_TEXT, "utf8");
+}
+
+main();
